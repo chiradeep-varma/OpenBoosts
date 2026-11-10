@@ -81,6 +81,8 @@
     for (let n = el; n && n !== root; n = n.parentElement) {
       let t = (n !== el && anchor(n)) || term(n);
       if (count(t + (sel && ' > ' + sel)) === 1) return t + (sel && ' > ' + sel);
+      // No parent: the site re-rendered and this element is no longer part of the page.
+      if (!n.parentElement) return null;
       const same = [...n.parentElement.children].filter((c) => c.localName === n.localName);
       if (same.length > 1 && !t.startsWith('#')) t += `:nth-of-type(${same.indexOf(n) + 1})`;
       sel = t + (sel && ' > ' + sel);
@@ -250,9 +252,14 @@
       const node = under(e.clientX, e.clientY);
       if (!node) return;
       aim(node);
+      // Everything about the element is worked out now, while it is on the page. Sites
+      // like Instagram re-render constantly; by the time a menu item is clicked, this
+      // node may have been thrown away and replaced by a new one that looks the same.
+      const sel = selectorFor(node), label = labelFor(node);
+      if (!sel) return;
       const rel = relatedSel(node);
-      if (!rel) return zap([node], selectorFor(node), labelFor(node));
-      picked = { node, rel };
+      if (!rel) return zap([node], sel, label);
+      picked = { node, rel, sel, label };
       zapAll.textContent = `Zap all ${rel.n} like it`;
       menu.hidden = false;
       const x = Math.min(e.clientX + 8, innerWidth - menu.offsetWidth - 8);
@@ -285,8 +292,8 @@
     undo.hidden = false;
   }
 
-  zapThis.onclick = () => zap([picked.node], selectorFor(picked.node), labelFor(picked.node));
-  zapAll.onclick = () => zap([...document.querySelectorAll(picked.rel.sel)], picked.rel.sel, `${picked.rel.n} × ${labelFor(picked.node)}`);
+  zapThis.onclick = () => zap([picked.node], picked.sel, picked.label);
+  zapAll.onclick = () => zap([...document.querySelectorAll(picked.rel.sel)], picked.rel.sel, `${picked.rel.n} × ${picked.label}`);
   zapAll.onmouseenter = () => showRelated(picked?.rel.sel);
   zapAll.onmouseleave = () => showRelated(null);
   undo.onclick = async () => {
