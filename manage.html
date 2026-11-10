@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>All boosts · OpenBoosts</title>
+  <link rel="icon" href="icons/32.png">
+  <link rel="stylesheet" href="ui.css">
+</head>
+<body>
+  <div class="manage">
+    <header>
+      <img src="icons/128.png" alt="">
+      <div>
+        <h1>Boosts</h1>
+        <p id="tagline" class="tagline"></p>
+      </div>
+      <div class="tools">
+        <button id="import" class="btn">Import</button>
+        <button id="export" class="btn">Export all</button>
+        <input id="files" type="file" accept=".json,.css,.js" multiple hidden>
+      </div>
+    </header>
+    <div id="sites"></div>
+    <div id="empty" class="empty" hidden>
+      <img src="icons/128.png" alt="">
+      <strong>Nothing boosted yet</strong>
+    </div>
+  </div>
+  <script src="engine.js"></script>
+  <script type="module" src="manage.js"></script>
+</body>
+</html>

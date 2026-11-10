@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "OpenBoosts",
+  "version": "1.0.0",
+  "description": "Make any website yours: recolor it, change its font, zap what you don't want, block it, or add your own CSS and JS.",
+  "minimum_chrome_version": "120",
+  "icons": { "16": "icons/16.png", "32": "icons/32.png", "48": "icons/48.png", "128": "icons/128.png" },
+  "action": {
+    "default_title": "OpenBoosts",
+    "default_popup": "popup.html",
+    "default_icon": { "16": "icons/16.png", "32": "icons/32.png" }
+  },
+  "permissions": ["storage", "scripting", "userScripts", "fontSettings", "favicon", "declarativeNetRequestWithHostAccess"],
+  "host_permissions": ["<all_urls>"],
+  "background": { "service_worker": "background.js" },
+  "content_scripts": [
+    { "matches": ["<all_urls>"], "js": ["engine.js", "recolor.js", "content.js"], "run_at": "document_start" }
+  ],
+  "web_accessible_resources": [{ "resources": ["blocked.html"], "matches": ["<all_urls>"] }],
+  "options_ui": { "page": "manage.html", "open_in_tab": true },
+  "commands": {
+    "_execute_action": { "suggested_key": { "default": "Alt+B" } },
+    "zap": { "suggested_key": { "default": "Alt+Z" }, "description": "Zap elements on this page" }
+  }
+}

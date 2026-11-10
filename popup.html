@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>OpenBoosts</title>
+  <link rel="stylesheet" href="ui.css">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body class="panel">
+  <header class="bar" id="bar">
+    <button id="title" popovertarget="menu" title="Boost options">
+      <span id="title-name"></span>
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4.5 6 8l3.5-3.5"/></svg>
+    </button>
+    <input id="name" maxlength="40" spellcheck="false" aria-label="Boost name" hidden>
+    <label class="switch" title="Turn this boost on or off"><input type="checkbox" id="on" aria-label="Boost on"><span></span></label>
+    <div id="menu" class="menu" popover>
+      <div id="menu-boosts"></div>
+      <button data-act="rename">Rename</button>
+      <button data-act="new">New boost</button>
+      <button data-act="all">All boosts</button>
+      <hr>
+      <button data-act="delete" class="danger">Delete boost</button>
+    </div>
+  </header>
+
+  <main id="home" class="view">
+    <div id="pad" class="pad idle" role="slider" tabindex="0" aria-label="Color: direction picks the hue, distance from the middle its strength"><div><i></i></div></div>
+
+    <div class="trio">
+      <button id="bulb" class="key" title="Switch between a light and a dark page" aria-label="Light or dark page">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21.500h4M8.500 14.500a6.500 6.500 0 1 1 7 0c-.6.500-1 1.200-1 2v1.500h-5v-1.500c0-.800-.400-1.500-1-2z"/></svg>
+      </button>
+      <button id="block" class="key" title="Block this site" aria-label="Block this site">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.500"/><path d="M6 6l12 12"/></svg>
+      </button>
+      <button id="color-clear" class="key" title="Back to the site's own colors" aria-label="Back to the site's own colors">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.500 4.500v6h6"/><path d="M4.800 15a8.500 8.500 0 1 0 2-8.800L2.500 10.500"/></svg>
+      </button>
+    </div>
+
+    <button id="font" class="key wide" popovertarget="font-menu" title="Font">
+      <span id="font-name">Font</span>
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.500 4.500 6 8l3.500-3.500"/></svg>
+    </button>
+    <div id="font-menu" class="menu fonts" popover></div>
+
+    <div class="duo">
+      <button id="size" class="key" title="Text size: click to step through 90, 100, 110, 125 and 150%"></button>
+      <button id="case" class="key" title="Letter case: click to switch between as written, uppercase and lowercase"></button>
+    </div>
+
+    <div class="split">
+      <button id="zap" class="key" title="Click things on the page to remove them">Zap</button>
+      <button id="zap-open" class="key" hidden></button>
+    </div>
+    <button id="code" class="key wide" title="Add your own CSS or JavaScript"><span>Code</span><span class="mono" id="code-mark">{}</span></button>
+  </main>
+
+  <main id="view-code" class="view" hidden>
+    <div class="back">
+      <button class="link" data-back>‹ Back</button>
+      <div class="seg" id="lang" role="group" aria-label="Language"><button data-v="css">CSS</button><button data-v="js">JS</button></div>
+    </div>
+    <textarea id="src" spellcheck="false" autocapitalize="off" aria-label="Code"></textarea>
+    <p id="code-note" class="note"></p>
+  </main>
+
+  <main id="view-zaps" class="view" hidden>
+    <div class="back">
+      <button class="link" data-back>‹ Back</button>
+      <button id="zap-clear" class="link">Restore all</button>
+    </div>
+    <ul id="zap-list" class="list"></ul>
+  </main>
+
+  <div id="nope" class="lone" hidden>
+    <div><img src="icons/128.png" alt=""><strong>This page can’t be boosted</strong></div>
+    <button class="btn" data-act="all">All boosts</button>
+  </div>
+
+  <script src="engine.js"></script>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

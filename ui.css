@@ -1,0 +1,85 @@
+/* One stylesheet for the panel (popup.html) and the All Boosts page (manage.html).
+   The look: one calm surface, generous space, soft wells for controls. Controls
+   are neutral ink; the icon's pastels appear only where something is the main act. */
+:root {
+  color-scheme: light dark;
+  --bg: #fff; --ink: #1f1d25; --muted: #8b8996; --line: #eceaf1; --well: #f5f4f8; --well-2: #eceaf2; --raised: #fff;
+  --pastel: linear-gradient(120deg, #cdbdff, #ffbfdc 55%, #ffd7ae);
+  --on-pastel: #2b2437; --warn: #fff1de;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #1b1a1f; --ink: #f3f2f6; --muted: #9795a2; --line: #2d2c33; --well: #26252b; --well-2: #313038; --raised: #3b3a43; --warn: #33291f; }
+}
+* { box-sizing: border-box; }
+html { scrollbar-width: none; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased; }
+[hidden] { display: none !important; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { border: 0; background: none; cursor: pointer; padding: 0; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+p { margin: 0; }
+
+/* ---- shared pieces ---- */
+.label { display: flex; align-items: baseline; justify-content: space-between; font-size: 13px; font-weight: 550; color: var(--muted); }
+.link { color: var(--muted); font-size: 13px; font-weight: 450; padding: 2px 8px; margin: -2px -8px; border-radius: 7px; }
+.link:hover { color: var(--ink); background: var(--well); }
+
+.switch { position: relative; width: 40px; height: 24px; flex: none; display: block; }
+.switch input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; z-index: 1; }
+.switch span { position: absolute; inset: 0; border-radius: 99px; background: var(--well-2); transition: background .2s; }
+.switch span::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%;
+  background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .22); transition: transform .22s cubic-bezier(.3, 1.3, .5, 1), background .2s; }
+.switch input:checked + span { background: var(--ink); }
+.switch input:checked + span::after { transform: translateX(16px); background: var(--bg); }
+.switch input:focus-visible + span { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+.seg { display: flex; padding: 3px; border-radius: 12px; background: var(--well); }
+.seg button { flex: 1; padding: 6px 9px; border-radius: 9px; color: var(--muted); font-weight: 550; font-size: 12.5px; white-space: nowrap;
+  display: flex; align-items: center; justify-content: center; gap: 7px; transition: background .15s, color .15s; }
+.seg button:hover { color: var(--ink); }
+.seg button[aria-pressed=true] { background: var(--raised); color: var(--ink); box-shadow: 0 1px 3px rgba(20, 16, 40, .12), 0 0 0 .5px rgba(20, 16, 40, .05); }
+
+.btn { padding: 9px 16px; border-radius: 11px; background: var(--well); font-weight: 550; transition: background .15s, transform .1s; }
+.btn:hover { background: var(--well-2); }
+.btn:active { transform: scale(.98); }
+.btn.quiet { background: none; color: var(--muted); padding: 9px 10px; }
+.btn.quiet:hover { background: var(--well); color: #e5484d; }
+
+input[type=range] { width: 100%; min-width: 0; appearance: none; height: 24px; margin: 0; background: none; cursor: pointer; display: block; }
+input[type=range]::-webkit-slider-runnable-track { height: 8px; border-radius: 99px; background: var(--well-2); }
+input[type=range]::-webkit-slider-thumb { appearance: none; width: 20px; height: 20px; margin-top: -6px; border-radius: 50%; background: #fff;
+  border: 0; box-shadow: 0 1px 4px rgba(0, 0, 0, .28), 0 0 0 .5px rgba(0, 0, 0, .08); transition: transform .1s; }
+input[type=range]:active::-webkit-slider-thumb { transform: scale(1.1); }
+
+.note { color: var(--muted); font-size: 13px; }
+.warn { padding: 12px 14px; border-radius: 12px; background: var(--warn); color: var(--ink); font-size: 13px; }
+.danger { color: #e5484d; }
+code { font: 13px ui-monospace, "SF Mono", Menlo, monospace; padding: 1px 5px; border-radius: 5px; background: var(--well); }
+.empty { text-align: center; color: var(--muted); display: grid; gap: 12px; justify-items: center; align-content: center; padding: 40px 20px; }
+.empty strong { color: var(--ink); font-size: 16px; }
+
+/* ---- All Boosts page ---- */
+.manage { max-width: 760px; margin: 0 auto; padding: 72px 28px 120px; display: grid; gap: 36px; }
+.manage > header { display: flex; align-items: center; gap: 18px; }
+.manage > header img { width: 52px; height: 52px; }
+.manage h1 { margin: 0; font-size: 30px; font-weight: 700; letter-spacing: -.025em; line-height: 1.1; }
+.manage .tagline { color: var(--muted); margin-top: 4px; }
+.manage .tools { margin-left: auto; display: flex; gap: 10px; }
+#sites { display: grid; gap: 34px; }
+.site-head { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.avatar { width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; font-weight: 700; font-size: 14px; color: #2b2437; flex: none; }
+.avatar.icon { background: var(--well) !important; }
+.avatar img { width: 18px; height: 18px; border-radius: 4px; }
+.site-head a { color: inherit; text-decoration: none; font-size: 16px; font-weight: 650; }
+.site-head a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.rows { border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
+.boost-row { display: flex; align-items: center; gap: 14px; padding: 18px 20px; }
+.boost-row + .boost-row { border-top: 1px solid var(--line); }
+.boost-row .text { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.boost-row .title { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.boost-row .what { color: var(--muted); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.manage .empty { border: 1px dashed var(--line); border-radius: 22px; padding: 72px 28px; }
+.empty img { width: 72px; height: 72px; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

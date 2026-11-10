@@ -1,0 +1,91 @@
+/* The boost panel: a narrow column, after Arc's Boosts editor. A title you can
+   click, a square color pad, and plain grey buttons with their names on them.
+   Shared pieces (switch, .btn, .link, .empty) come from ui.css. */
+.panel { --pane: #fbfbfd; --btn: #ebebef; --btn-2: #e1e1e7; --card: #fff;
+  width: 232px; background: var(--pane); display: flex; flex-direction: column; }
+@media (prefers-color-scheme: dark) { .panel { --pane: #1e1d22; --btn: #2c2b32; --btn-2: #37363e; --card: #2a2930; } }
+.panel.wide { width: 440px; }
+
+/* Title bar: the boost's name, centered. Clicking it opens the menu. */
+.bar { position: relative; height: 42px; flex: none; display: grid; place-items: center; background: color-mix(in srgb, var(--btn) 45%, var(--pane));
+  border-bottom: 1px solid var(--line); }
+#title { display: flex; align-items: center; gap: 6px; max-width: 124px; padding: 5px 9px; border-radius: 8px; font-size: 15px; font-weight: 650; }
+#title:hover { background: var(--btn); }
+#title span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#title svg { flex: none; color: var(--muted); }
+/* Renaming happens in place: the same spot, size and weight as the title. */
+#name { width: 124px; text-align: center; border: 0; border-radius: 8px; padding: 5px 9px; background: var(--btn); color: var(--ink);
+  font-size: 15px; font-weight: 650; outline: none; }
+.bar .switch { position: absolute; right: 12px; top: 11px; width: 34px; height: 20px; }
+.bar .switch span::after { width: 14px; height: 14px; }
+.bar .switch input:checked + span::after { transform: translateX(14px); }
+
+.menu { position: fixed; inset: 46px 0 auto 0; margin: 0 auto; padding: 5px; border: 1px solid var(--line); border-radius: 12px; width: 190px;
+  background: var(--card); color: var(--ink); box-shadow: 0 14px 36px rgba(20, 16, 40, .2); }
+.menu:popover-open { display: grid; animation: pop .12s ease-out; transform-origin: top center; }
+.menu div { display: grid; }
+.menu button { text-align: left; padding: 8px 11px; border-radius: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.menu button:hover { background: var(--btn); }
+.menu button[aria-current=true] { font-weight: 650; }
+.menu button.off { color: var(--muted); }
+.menu hr { border: 0; border-top: 1px solid var(--line); margin: 4px 0; width: 100%; }
+@keyframes pop { from { opacity: 0; scale: .95; } }
+
+/* A boost that is switched off: its settings are all still there, just not in force. */
+.panel.off #home { opacity: .5; transition: opacity .15s; }
+.view { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 8px; animation: view .15s ease-out; }
+@keyframes view { from { opacity: 0; transform: translateY(3px); } }
+
+/* Color pad. The ring is the hue wheel; inside it, direction picks the hue and
+   distance from the middle how strong it is. The large puck is the page's color,
+   the small one the color of its text. */
+.pad { position: relative; aspect-ratio: 1; border-radius: 22px; padding: 7px; touch-action: none; cursor: crosshair;
+  background: conic-gradient(from 90deg, hsl(0 92% 62%), hsl(45 95% 62%), hsl(75 95% 62%), hsl(120 85% 64%), hsl(180 90% 66%), hsl(230 95% 58%), hsl(285 85% 60%), hsl(325 85% 58%), hsl(360 92% 62%)); }
+.pad div { position: relative; width: 100%; height: 100%; border-radius: 16px; background-color: var(--card);
+  background-image: radial-gradient(circle, rgba(120, 118, 135, .32) .7px, transparent 1.1px), radial-gradient(circle at var(--x, 50%) var(--y, 50%), var(--glow, transparent), transparent 62%);
+  background-size: 5px 5px, auto; }
+.pad i { position: absolute; left: var(--x); top: var(--y); width: 34px; height: 34px; margin: -17px; border-radius: 50%; border: 3px solid #fff;
+  background: var(--c); box-shadow: 0 2px 8px rgba(0, 0, 0, .3); pointer-events: none; }
+.pad.idle i { display: none; }
+
+.trio, .duo { display: grid; gap: 8px; }
+.trio { grid-template-columns: repeat(3, 1fr); }
+.duo { grid-template-columns: 1fr 1fr; }
+.key { height: 38px; border-radius: 11px; background: var(--btn); font-size: 15px; font-weight: 650; display: flex; align-items: center; justify-content: center;
+  gap: 8px; padding: 0 14px; min-width: 0; transition: background .12s, transform .1s; }
+.key:hover:not(:disabled) { background: var(--btn-2); }
+.key:active:not(:disabled) { transform: scale(.97); }
+.key:disabled { opacity: .4; cursor: default; }
+.key[aria-pressed=true] { background: var(--ink); color: var(--pane); }
+.key.wide { justify-content: space-between; }
+.key small { font-size: 14px; font-weight: 600; color: var(--muted); }
+.mono { font: 600 15px ui-monospace, "SF Mono", Menlo, monospace; }
+
+/* Font: a list that scrolls inside itself, so it stays put under its key. */
+.menu.fonts { inset: auto 16px auto 16px; width: auto; max-height: 232px; overflow-y: auto; scrollbar-width: thin; overscroll-behavior: contain; }
+.menu.fonts button { flex: none; }
+#font span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Zap is one key in two parts: start zapping, and the count that opens the list. */
+.split { display: flex; border-radius: 11px; background: var(--btn); overflow: hidden; }
+.split .key { border-radius: 0; background: none; }
+.split .key:first-child { flex: 1; justify-content: flex-start; }
+.split .key + .key { padding: 0 16px; }
+
+.back { display: flex; align-items: center; justify-content: space-between; min-height: 30px; }
+#src { height: 360px; width: 100%; resize: none; border: 0; border-radius: 12px; padding: 14px; background: var(--card); color: var(--ink);
+  box-shadow: 0 1px 4px rgba(20, 16, 40, .08); font: 13px/1.6 ui-monospace, "SF Mono", Menlo, Consolas, monospace; tab-size: 2; }
+#src:focus-visible { outline-offset: -2px; }
+/* Lists (zapped things, blocked sites): one line each, cut with an ellipsis, never wider than the panel. */
+.view > * { min-width: 0; }
+.list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; max-height: 380px; overflow-y: auto; scrollbar-width: none; }
+.list li { display: flex; align-items: center; gap: 6px; height: 38px; padding: 0 6px 0 12px; border-radius: 11px; background: var(--btn); font-weight: 550; }
+.list span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.list button { width: 26px; height: 26px; border-radius: 7px; color: var(--muted); flex: none; }
+.list button:hover { background: var(--btn-2); color: var(--ink); }
+
+/* A page with nothing on it but the icon, one line, and one button at the bottom. */
+.lone { height: 420px; padding: 16px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.lone div { flex: 1; display: grid; gap: 14px; justify-items: center; align-content: center; }
+.lone img { width: 64px; height: 64px; }
+.lone strong { font-size: 15px; }
