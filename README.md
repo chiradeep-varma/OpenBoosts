@@ -40,7 +40,7 @@ No account, no server, no analytics. Your boosts stay in your browser.
 
 ## Coming from Arc
 
-CSS and JavaScript written for an Arc boost run here unchanged: paste them into **Code**, or import the boost's `.css` / `.js` file from the All Boosts page and say which site it is for.
+CSS and JavaScript written for an Arc boost run here unchanged: paste them into **Code**.
 
 ## Privacy
 

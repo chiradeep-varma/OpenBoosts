@@ -99,39 +99,43 @@ $('export').onclick = async () => {
   h('a', { href: URL.createObjectURL(file), download: 'openboosts-backup.json' }).click();
 };
 
+// Import takes only files that Export made. Everything it brings in arrives
+// switched off, so nothing from a file restyles a site, blocks it or runs code
+// until the user turns it on. What happened is said on the page, not in a dialog.
+let noticeTimer = 0;
+function notice(text) {
+  $('notice').textContent = text;
+  $('notice').hidden = false;
+  clearTimeout(noticeTimer);
+  noticeTimer = setTimeout(() => { $('notice').hidden = true; }, 8000);
+}
+
 $('import').onclick = () => $('files').click();
 $('files').onchange = async () => {
   const add = {}; // host → raw boosts
+  let rejected = 0;
   for (const f of $('files').files) {
-    const text = await f.text();
-    const code = f.name.match(/\.(css|js)$/i)?.[1].toLowerCase();
-    if (code) {
-      // A bare stylesheet or script, e.g. from an Arc boost: all it lacks is the site.
-      const host = prompt(`Which site is ${f.name} for? For example: github.com`)?.trim().replace(/^https?:\/\//, '').split('/')[0];
-      if (host) (add[host] ??= []).push({ name: f.name.replace(/\.\w+$/, ''), [code]: text });
-      continue;
-    }
     let data;
-    try { data = JSON.parse(text); } catch { /* reported below */ }
-    if (data?.boost && typeof data.host === 'string') (add[data.host] ??= []).push(data.boost);
-    else if (data?.sites && typeof data.sites === 'object') {
+    try { data = JSON.parse(await f.text()); } catch { /* counted below */ }
+    if (data?.sites && typeof data.sites === 'object') {
       for (const [host, boosts] of Object.entries(data.sites)) if (Array.isArray(boosts)) (add[host] ??= []).push(...boosts);
-    } else alert(`${f.name} isn't an OpenBoosts file.`);
+    } else if (data?.boost && typeof data.host === 'string') (add[data.host] ??= []).push(data.boost);
+    else rejected++;
   }
   $('files').value = '';
 
-  // A boost's JS runs with the page's full access, so a file never brings it in silently.
-  const hasJs = Object.values(add).flat().some((b) => typeof b?.js === 'string' && b.js.trim());
-  const keepJs = !hasJs || confirm('Some of these boosts contain JavaScript. It can read and change everything on the sites it runs on, so only keep it if you trust where the file came from.\n\nOK: import with JavaScript.\nCancel: import without it.');
+  let count = 0;
   for (const [host, boosts] of Object.entries(add)) {
     if (!/^[a-z0-9.-]+$/i.test(host)) continue;
     await change(OB.siteKey(host.toLowerCase()), (site) => {
-      for (const b of boosts) site.boosts.push(OB.cleanBoost({ ...b, id: '', js: keepJs ? b?.js : '' }));
-      // Imported boosts join the site; whichever was running keeps running, alone.
-      const running = OB.active(site.boosts);
-      if (running) OB.only(site.boosts, running.id);
+      for (const b of boosts) { site.boosts.push(OB.cleanBoost({ ...b, id: '', on: false })); count++; }
     });
   }
+  const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
+  notice([
+    count && `Imported ${plural(count, 'boost')}, switched off.`,
+    rejected && `${plural(rejected, 'file')} ${rejected === 1 ? "wasn't an OpenBoosts export" : "weren't OpenBoosts exports"}.`,
+  ].filter(Boolean).join(' ') || 'Nothing to import.');
 };
 
 chrome.storage.onChanged.addListener(render);
